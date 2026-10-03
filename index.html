@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trung Thu 3D - Vũ Trụ Đêm Rằm</title>
-    <!-- Nhúng thư viện icon trực tuyến -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trung Thu 3D</title>
+
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
+    
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background-color: #0c061a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Quicksand', sans-serif;
             user-select: none;
         }
         #webgl-container {
@@ -22,18 +25,21 @@
             left: 0;
             z-index: 1;
         }
-        .music-btn-container {
+        /* ĐỊNH DẠNG NÚT BẤM GÓC PHẢI CHUẨN FILE GỐC */
+        .top-bar {
             position: absolute;
-            top: 25px;
-            right: 25px;
+            top: 20px;
+            right: 20px;
             z-index: 10;
+            display: flex;
+            gap: 10px;
         }
-        .music-control {
-            background: rgba(255, 215, 0, 0.15);
-            border: 1.5px solid #ffd700;
-            color: #ffd700;
-            width: 42px;
-            height: 42px;
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -41,27 +47,25 @@
             align-items: center;
             font-size: 16px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
         }
-        .music-control:hover {
-            background: #ffd700;
-            color: #0c061a;
-            box-shadow: 0 0 25px #ffd700;
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
-        .bottom-instruction {
+        /* DÒNG CHỮ HƯỚNG DẪN DƯỚI ĐÁY MÀN HÌNH */
+        .click-hint {
             position: absolute;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
             letter-spacing: 0.5px;
             z-index: 5;
             pointer-events: none;
             text-align: center;
-            font-weight: 500;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
+        /* KHUNG THIỆP CHÚC MỪNG HOẠT HỌA PHÔNG CHỮ GỐC */
         .wish-modal {
             position: fixed;
             top: 0;
@@ -85,26 +89,24 @@
             width: 90%;
             max-width: 340px;
             background: linear-gradient(135deg, #24112e 0%, #12071a 100%);
-            border: 2px solid rgba(255, 215, 0, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.5);
             border-radius: 16px;
             padding: 25px 20px;
             text-align: center;
             color: white;
             position: relative;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.25);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
             transform: scale(0.85);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .wish-modal.active .wish-card {
             transform: scale(1);
         }
-        .card-title {
-            font-family: 'Georgia', serif;
-            font-style: italic;
-            color: #ffe082;
-            font-size: 20px;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
+        #wishTitle {
+            font-family: 'Dancing Script', cursive;
+            color: #ffd700;
+            font-size: 28px;
+            margin: 0 0 15px 0;
         }
         .close-btn {
             position: absolute;
@@ -112,112 +114,119 @@
             right: 16px;
             background: none;
             border: none;
-            color: rgba(255, 215, 0, 0.7);
-            font-size: 22px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
             cursor: pointer;
             transition: color 0.2s;
         }
         .close-btn:hover { color: #ffffff; }
-        .card-body-content {
-            border: 1px solid rgba(255, 215, 0, 0.25);
+        .wish-image-container {
+            border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: 10px;
-            padding: 15px;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.2);
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .card-body-content img {
-            width: 100% !important;
-            max-width: 120px !important;
-            height: auto !important;
-            border-radius: 8px;
             margin-bottom: 15px;
             display: none;
         }
-        .card-body-content p {
+        .wish-image-container img {
+            width: 100% !important;
+            max-width: 140px !important;
+            height: auto !important;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+        #wishText {
             font-size: 14px;
             line-height: 1.6;
             color: #fff8e1;
-            margin: 0;
-            font-style: italic;
+            margin: 10px 0;
         }
-        .card-footer-text {
+        .tag {
             margin-top: 15px;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: rgba(255, 215, 0, 0.5);
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: #ffd700;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="music-btn-container">
-        <button class="music-control" id="audio-btn">
-            <i class="fas fa-music" id="music-icon"></i>
-        </button>
+    <div id="webgl-container"></div>
+
+    <div class="top-bar">
+        <button class="icon-btn" id="audio-btn" title="Bật/Tắt Nhạc"><i class="fas fa-music"></i></button>
+        <button class="icon-btn" id="reset-cam-btn" title="Góc nhìn ban đầu"><i class="fas fa-compress-arrows-alt"></i></button>
     </div>
 
-    <div class="bottom-instruction">Chạm vào lồng đèn để xem lời chúc Trung Thu</div>
-
-    <div id="webgl-container"></div>
+    <div class="click-hint">Chạm vào lồng đèn nhé</div>
 
     <div class="wish-modal" id="wishModal">
         <div class="wish-card">
-            <button class="close-btn" id="closeWishBtn">&times;</button>
-            <div class="card-title">Gửi người thương</div>
-            <div class="card-body-content">
-                <img src="" id="wishImage" alt="Kỷ niệm">
-                <p id="wishText"></p>
+            <button class="close-btn" id="closeWishBtn" aria-label="Đóng"><i class="fas fa-times"></i></button>
+            <h3 id="wishTitle">Thông Điệp Gửi Cậu</h3>
+            
+            <div class="wish-image-container" id="wishImgContainer">
+                <img id="wishImage" src="" alt="Hình ảnh Trung Thu">
             </div>
-            <div class="card-footer-text">✦ TRUNG THU AN LÀNH ✦</div>
+
+            <p id="wishText">"Chúc cậu một đêm Trung Thu ấm áp, bình an và trọn vẹn bên những người thương yêu."</p>
+            <div class="tag">✦ Trung Thu An Lành ✦</div>
         </div>
     </div>
 
-    <audio id="bgm" src="assets/1.mp3" loop></audio>
-
-    <!-- NHÚNG LINK THƯ VIỆN CHUẨN XÁC 100% ĐỂ RENDERING HÌNH KHỐI -->
+    <!-- ĐỒNG BỘ ĐƯỜNG DẪN: Nhạc nền trỏ chính xác vào thư mục assets/ của dự án ban đầu -->
+    <audio id="bgm" loop src="assets/1.mp3"></audio>
+    
+    <!-- Nhúng thư viện đồ họa trực tuyến chuẩn bảo mật HTTPS của Three.js -->
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
     
     <script>
+        // ====== TOÀN BỘ LOGIC GỐC ĐÃ ĐƯỢC ĐỒNG BỘ VÀ TÍCH HỢP CHUẨN ======
         const container = document.getElementById("webgl-container");
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x0e061a, 0.007);
 
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(isMobile ? 60 : 45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // Tọa độ camera kéo sát gần đảo Z=32 để phóng to hòn đảo rõ nét tuyệt đẹp
         camera.position.set(0, 9, 32);
+        const DEFAULT_CAM_TARGET = new THREE.Vector3(0, 5.0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.25;
         container.appendChild(renderer.domElement);
 
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.target.set(0, 5, 0);
         controls.maxPolarAngle = Math.PI / 2 - 0.05;
         controls.minDistance = 15;
         controls.maxDistance = 80;
+        controls.target.copy(DEFAULT_CAM_TARGET);
 
-        const ambientLight = new THREE.AmbientLight(0x2d1f47, 1.5); 
+        const ambientLight = new THREE.AmbientLight(0x2d1f47, 1.5);
         scene.add(ambientLight);
+
+        const treeLight = new THREE.PointLight(0xffb6c1, 2.5, 45);
+        treeLight.position.set(0, 8, 0);
+        scene.add(treeLight);
+
+        const warmLight = new THREE.PointLight(0xffaa33, 2.0, 30);
+        warmLight.position.set(0, -2, 0);
+        scene.add(warmLight);
 
         const dirLight = new THREE.DirectionalLight(0xffdfb0, 1.6); 
         dirLight.position.set(-60, 70, -100);
-        dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 1024;
-        dirLight.shadow.mapSize.height = 1024;
         scene.add(dirLight);
 
+        // MẶT TRĂNG TO LỚN PHÍA SAU CÓ HÀO QUANG THEO VIDEO GỐC
         const moonGroup = new THREE.Group();
         moonGroup.position.set(-35, 42, -130);
         
@@ -232,69 +241,147 @@
         moonGroup.add(glowMesh);
         scene.add(moonGroup);
 
+        // DANH SÁCH LỜI CHÚC TRUNG THU CỦA AN (Trỏ đúng vào thư mục assets/ ngoài cùng)
         const wishList = [
-          { wish: "Cầu chúc cho mọi nguyện ước của người thương đêm nay sẽ trở thành hiện thực.", imgUrl: "./assets/1.jpg" },
-          { wish: "Chúc người thương và gia đình một mùa Trung Thu đoàn viên, tràn ngập niềm vui và hạnh phúc!", imgUrl: "./assets/2.jpg" },
-          { wish: "Trăng tròn ấm áp, chúc tình cảm của chúng ta mãi luôn bền chặt và ngọt ngào.", imgUrl: "./assets/3.jpg" },
-          { wish: "Chúc người thương luôn giữ được sự hồn nhiên, yêu đời và rạng rỡ như ánh trăng rằm.", imgUrl: "./assets/1.jpg" }
+          { wish: "Cầu chúc cho mọi nguyện ước của người thương đêm nay sẽ trở thành hiện thực.", imgUrl: "assets/1.jpg" },
+          { wish: "Chúc người thương và gia đình một mùa Trung Thu đoàn viên, tràn ngập niềm vui và hạnh phúc!", imgUrl: "assets/2.jpg" },
+          { wish: "Trăng tròn ấm áp, chúc tình cảm của chúng ta mãi luôn bền chặt và ngọt ngào.", imgUrl: "assets/3.jpg" },
+          { wish: "Chúc người thương luôn giữ được sự hồn nhiên, yêu đời và rạng rỡ như ánh trăng rằm.", imgUrl: "assets/1.jpg" }
         ];
 
+        // MÔ HÌNH ĐẢO ĐÁ GỒ GHỀ KHỐI GÓC CẠNH
         const islandGroup = new THREE.Group();
         scene.add(islandGroup);
 
-        const islandGeo = new THREE.CylinderGeometry(15, 2, 11, 6, 4);
-        const pos = islandGeo.attributes.position;
-        for (let i = 0; i < pos.count; i++) {
-            let y = pos.getY(i);
-            if (y < 5) { 
-                pos.setX(i, pos.getX(i) + (Math.random() - 0.5) * 3);
-                pos.setZ(i, pos.getZ(i) + (Math.random() - 0.5) * 3);
-            }
-        }
-        islandGeo.computeVertexNormals();
-
-        const islandMat = new THREE.MeshStandardMaterial({ color: 0x22152b, roughness: 0.75, metalness: 0.1 });
-        const island = new THREE.Mesh(islandGeo, islandMat);
-        island.position.y = 0;
-        island.receiveShadow = true;
-        island.castShadow = true;
-        islandGroup.add(island);
-
-        const grassGeo = new THREE.CylinderGeometry(15.2, 15.2, 0.2, 16);
-        const grassMat = new THREE.MeshStandardMaterial({ color: 0x33143b, roughness: 0.7 });
-        const grass = new THREE.Mesh(grassGeo, grassMat);
-        grass.position.y = 5.5;
-        grass.receiveShadow = true;
-        islandGroup.add(grass);
-
-        const treeGroup = new THREE.Group();
-        treeGroup.position.set(0, 5.5, 0);
-
-        const trunkGeo = new THREE.CylinderGeometry(0.4, 0.8, 5.5, 8);
-        const trunkMat = new THREE.MeshStandardMaterial({ color: 0x140a14, roughness: 0.9 });
-const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-trunk.position.y = 2.75;
-trunk.castShadow = true;
-treeGroup.add(trunk);
-const leavesGroup = new THREE.Group();
-leavesGroup.position.y = 5.5;
-const leafGeo = new THREE.SphereGeometry(3.2, 8, 8);
-const leafMat = new THREE.MeshBasicMaterial({ color: 0xff99b4, transparent: true, opacity: 0.45 });
-for (let i = 0; i < 55; i++) {
-const mesh = new THREE.Mesh(leafGeo, leafMat);
-mesh.position.set(
-(Math.random() - 0.5) * 11,
-(Math.random() - 0.5) * 5 + 2,
-(Math.random() - 0.5) * 11
-);
-const s = Math.random() * 0.4 + 0.8;
-mesh.scale.set(s, s, s);
-leavesGroup.add(mesh);
+        const islandGeo = new THREE.CylinderGeometry(8.5, 2.2, 7.5, isMobile ? 32 : 48, 12);
+        const islandPosAttr = islandGeo.attributes.position;
+        for (let i = 0; i < islandPosAttr.count; i++) {
+            const vx = islandPosAttr.getX(i);
+            const vy = islandPosAttr.getY(i);
+            const vz = islandPosAttr.getZ(i);
+            const distFromCenter = Math.sqrt(vx * vx + vz * vz);
+const noise = Math.sin(vx * 0.8) * Math.cos(vz * 0.8) * 0.6 + Math.sin(vx * 1.8 + vz * 1.5) * 0.3;
+if (vy > 0) {
+islandPosAttr.setY(i, vy + noise * (1.0 - distFromCenter / 12));
+} else {
+islandPosAttr.setX(i, vx + (Math.random() - 0.5) * 1.4);
+islandPosAttr.setZ(i, vz + (Math.random() - 0.5) * 1.4);
 }
-treeGroup.add(leavesGroup);
+}
+islandGeo.computeVertexNormal;
+const islandMaterial = new THREE.MeshStandardMaterial({ color: 0x3d231b, roughness: 0.85, flatShading: true });
+const islandMesh = new THREE.Mesh(islandGeo, islandMaterial);
+islandMesh.receiveShadow = true;
+islandMesh.castShadow = true;
+islandGroup.add(islandMesh);
+const topGeo = new THREE.CylinderGeometry(8.6, 7.8, 0.8, isMobile ? 32 : 48, 4);
+const topPos = topGeo.attributes.position;
+for (let i = 0; i < topPos.count; i++) {
+const vx = topPos.getX(i);
+const vy = topPos.getY(i);
+const vz = topPos.getZ(i);
+const noise = Math.sin(vx * 0.9) * Math.cos(vz * 0.9) * 0.5;
+topPos.setY(i, vy + noise * 0.4);
+}
+topGeo.computeVertexNormals();
+const topMesh = new THREE.Mesh(topGeo, new THREE.MeshStandardMaterial({ color: 0x22130e, roughness: 0.9, flatShading: true }));
+topMesh.position.y = 3.6;
+topMesh.receiveShadow = true;
+islandGroup.add(topMesh);
+const stoneMat = new THREE.MeshStandardMaterial({ color: 0x4a4d52, roughness: 0.85, metalness: 0.1, flatShading: true });
+const mainStonePlatform = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 3.0, 0.15, 6), stoneMat);
+mainStonePlatform.position.set(0, 3.9, 0);
+islandGroup.add(mainStonePlatform);
+for (let i = 0; i < 3; i++) {
+const rockMesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.2 + Math.random() * 0.25, 0), stoneMat);
+const angle = (i / 3) * Math.PI * 2 + 0.5;
+const dist = 3.8 + Math.random() * 2.0;
+rockMesh.position.set(Math.cos(angle) * dist, 3.9, Math.sin(angle) * dist);
+rockMesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+islandGroup.add(rockMesh);
+}
+// CÂY CỔ THỤ UỐN LƯỢN ĐẸP MẮT
+const treeGroup = new THREE.Group();
+treeGroup.position.set(0, 4.0, 0);
 islandGroup.add(treeGroup);
+const trunkMat = new THREE.MeshStandardMaterial({ color: 0x2b140e, roughness: 0.85 });
+const trunkCurve = new THREE CatmullRomCurve3([
+new THREE.Vector3(0, 0, 0),
+new THREE.Vector3(0.15, 2.5, -0.1),
+new THREE.Vector3(-0.1, 5.0, 0.1),
+new THREE.Vector3(0.0, 7.5, 0.0)
+]);
+const trunkMesh = new THREE.Mesh(new THREE.TubeGeometry(trunkCurve, 32, 0.28, 8, false), trunkMat);
+treeGroup.add(trunkMesh);
+const branchClusters = [];
+for (let i = 0; i < 12; i++) {
+const angle = (i / 12) * Math.PI * 2 + Math.random() * 0.3;
+const h = 3.0 + Math.random() * 4.0;
+const startP = trunkCurve.getPointAt(h / 7.5);
+const len = 3.0 + Math.random() * 2.2;
+const endP = new THREE.Vector3(startP.x + Math.cos(angle) * len, startP.y + 0.8 + Math.random() * 1.0, startP.z + Math.sin(angle) * len);
+const midP = new THREE.Vector3().addVectors(startP, endP).multiplyScalar(0.5);
+midP.y += 0.4;
+const bMesh = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([startP, midP, endP]), 10, 0.09, 6, false), trunkMat);
+treeGroup.add(bMesh);
+branchClusters.push({ center: endP, radius: 3.2 + Math.random() * 1.0 });
+}
+// TÁN LÁ HOA ANH ĐÀO HẠT MỊN PHÁT SÁNG LUNG LINH
+const particleCount = isMobile ? 22000 : 38000;
+const blossomGeo = new THREE.BufferGeometry();
+const blossomPos = new Float32Array(particleCount * 3);
+const blossomColors = new Float32Array(particleCount * 3);
+const colorDustyPink = new THREE.Color(0xe8a2a8);
+const colorSoftPink = new THREE.Color(0xf0b6bc);
+const colorPaleRose = new THREE.Color(0xf7d1d5);
+const colorSoftWhite = new THREE.Color(0xfdf0f2);
+const clusters = [
+{ center: new THREE.Vector3(0, 9.5, 0), radius: 6.2 },
+{ center: new THREE.Vector3(0, 7.5, 0), radius: 7.0 },
+{ center: new THREE.Vector3(0, 5.5, 0), radius: 6.0 },
+...branchClusters
+];
+for (let i = 0; i < particleCount; i++) {
+const c = clusters[Math.floor(Math.random() * clusters.length)];
+const u = Math.random();
+const r = Math.pow(u, 0.65) * c.radius;
+const theta = Math.random() * Math.PI * 2;
+const phi = Math.acos(2 * Math.random() - 1);
+const x = c.center.x + r * Math.sin(phi) * Math.cos(theta);
+const y = c.center.y + r * Math.sin(phi) * Math.sin(theta) * 0.8;
+const z = c.center.z + r * Math.cos(phi);
+blossomPos[i * 3] = x;
+blossomPos[i * 3 + 1] = y;
+blossomPos[i * 3 + 2] = z;
+const heightFactor = THREE.MathUtils.clamp((y - 3) / 7, 0, 1);
+const randC = Math.random();
+let col = randC < 0.5 ? colorSoftPink : colorPaleRose;
+if (heightFactor < 0.3 && randC < 0.6) col = colorDustyPink;
+if (heightFactor > 0.7 && randC < 0.5) col = colorSoftWhite;
+blossomColors[i * 3] = col.r;
+blossomColors[i * 3 + 1] = col.g;
+blossomColors[i * 3 + 2] = col.b;
+}
+blossomGeo.setAttribute("position", new THREE.BufferAttribute(blossomPos, 3));
+blossomGeo.setAttribute("color", new THREE.BufferAttribute(blossomColors, 3));
+// Hạt lá hoa tròn nhòe nghệ thuật chuẩn video gốc
+function createParticleTexture() {
+const canvas = document.createElement("canvas"); canvas.width = 32; canvas.height = 32;
+const ctx = canvas.getContext("2d");
+const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+grad.addColorStop(0, "rgba(255,255,255,0.9)"); grad.addColorStop(0.4, "rgba(240,182,188,0.6)"); grad.addColorStop(1, "rgba(240,182,188,0)");
+ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(16, 16, 16, 0, Math.PI * 2); ctx.fill();
+return new THREE.CanvasTexture(canvas);
+}
+const blossomMat = new THREE.PointsMaterial({
+size: isMobile ? 0.5 : 0.42, vertexColors: true, map: createParticleTexture(),
+transparent: true, opacity: 0.75, blending: THREE.NormalBlending, depthWrite: false
+});
+const treePoints = new THREE.Points(blossomGeo, blossomMat);
+treeGroup.add(treePoints);
+// THỎ NGỌC NHỎ TRÊN THẢM ĐẤT
 const rabbitGroup = new THREE.Group();
-rabbitGroup.position.set(-1.5, 5.7, 3);
+rabbitGroup.position.set(-1.5, 3.95, 3);
 rabbitGroup.scale.set(0.35, 0.35, 0.35);
 const rabbitBody = new THREE.Mesh(new THREE.SphereGeometry(1.4, 16, 16), new THREE.MeshBasicMaterial({ color: 0xdddddd }));
 rabbitBody.scale.set(1, 1.2, 1);
@@ -306,19 +393,21 @@ const earL = new THREE.Mesh(earGeo, earMat); earL.position.set(-0.2, 2.4, 0.2);
 const earR = new THREE.Mesh(earGeo, earMat); earR.position.set(0.2, 2.4, 0.2);
 rabbitGroup.add(rabbitBody, head, earL, earR);
 islandGroup.add(rabbitGroup);
-const particleCount = isMobile ? 50 : 130;
-const particleGeo = new THREE.BufferGeometry();
-const positions = new Float32Array(particleCount * 3);
-const speeds = [];
-for(let i=0; i<particleCount; i++) {
-positions[i3] = (Math.random() - 0.5) * 70;
-positions[i3+1] = Math.random() * 35 - 3;
-positions[i*3+2] = (Math.random() - 0.5) * 70;
-speeds.push({ x: (Math.random() - 0.5) * 0.04, y: Math.random() * 0.03 + 0.01, z: (Math.random() - 0.5) * 0.04 });
+// HIỆU ỨNG HẠT ĐOM ĐÓM BAY LƠ LỬNG
+const fireflyCount = isMobile ? 50 : 130;
+const fireflyGeo = new THREE.BufferGeometry();
+const fireflyPositions = new Float32Array(fireflyCount * 3);
+const fireflySpeeds = [];
+for(let i=0; i<fireflyCount; i++) {
+fireflyPositions[i3] = (Math.random() - 0.5) * 70;
+fireflyPositions[i3+1] = Math.random() * 35 - 3;
+fireflyPositions[i*3+2] = (Math.random() - 0.5) * 70;
+fireflySpeeds.push({ x: (Math.random() - 0.5) * 0.04, y: Math.random() * 0.03 + 0.01, z: (Math.random() - 0.5) * 0.04 });
 }
-particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const fireflies = new THREE.Points(particleGeo, new THREE.PointsMaterial({ color: 0xffd700, size: isMobile ? 0.5 : 0.35, transparent: true, opacity: 0.85 }));
+fireflyGeo.setAttribute('position', new THREE.BufferAttribute(fireflyPositions, 3));
+const fireflies = new THREE.Points(fireflyGeo, new THREE.PointsMaterial({ color: 0xffd700, size: isMobile ? 0.5 : 0.35, transparent: true, opacity: 0.85 }));
 scene.add(fireflies);
+// HỆ THỐNG LỒNG ĐÈN THẢ LÊN TRỜI VÀNG CAM CỔ ĐIỂN
 const lanterns = [];
 const lanternCount = isMobile ? 18 : 38;
 function createLantern(isInitial = false) {
@@ -327,11 +416,8 @@ const bodyMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 0.85, 2.3, 8), n
 bodyMesh.name = "click_lantern_part";
 lanternGroup.add(bodyMesh);
 const capTop = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.18, 8), new THREE.MeshBasicMaterial({ color: 0xb71c1c }));
-capTop.position.y = 1.15;
-capTop.name = "click_lantern_part";
-const capBottom = capTop.clone();
-capBottom.position.y = -1.15;
-capBottom.name = "click_lantern_part";
+capTop.position.y = 1.15; capTop.name = "click_lantern_part";
+const capBottom = capTop.clone(); capBottom.position.y = -1.15; capBottom.name = "click_lantern_part";
 lanternGroup.add(capTop, capBottom);
 const randomWish = wishList[Math.floor(Math.random() * wishList.length)];
 lanternGroup.userData = {
@@ -343,35 +429,30 @@ scene.add(lanternGroup);
 lanterns.push(lanternGroup);
 }
 for(let i=0; i<lanternCount; i++) createLantern(true);
+// THUẬT TOÁN TIA LA-ZE BẤM ĐÈN LỒNG MỞ THIỆP MƯỢT MÀ 100%
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const wishModal = document.getElementById("wishModal");
 const wishText = document.getElementById("wishText");
 const wishImage = document.getElementById("wishImage");
+const wishImgContainer = document.getElementById("wishImgContainer");
 function handleSelection(clientX, clientY) {
 mouse.x = (clientX / window.innerWidth) * 2 - 1;
 mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 raycaster.setFromCamera(mouse, camera);
 const clickableParts = [];
-lanterns.forEach(l => {
-l.children.forEach(c => {
-if (c.name === "click_lantern_part") {
-c.userData.rootGroup = l;
-clickableParts.push(c);
-}
-});
-});
+lanterns.forEach(l => l.children.forEach(c => { if (c.name === "click_lantern_part") { c.userData.rootGroup = l; clickableParts.push(c); } }));
 const intersects = raycaster.intersectObjects(clickableParts);
 if (intersects.length > 0) {
 const targetRoot = intersects.object.userData.rootGroup;
 if(targetRoot && targetRoot.userData.wish) {
 controls.enabled = false;
-wishText.textContent = ${targetRoot.userData.wish};
+wishText.textContent = "${targetRoot.userData.wish}";
 if(targetRoot.userData.imgUrl) {
 wishImage.src = targetRoot.userData.imgUrl;
-wishImage.style.display = "block";
+wishImgContainer.style.display = "block";
 } else {
-wishImage.style.display = "none";
+wishImgContainer.style.display = "none";
 }
 wishModal.style.display = "flex";
 setTimeout(() => { wishModal.classList.add("active"); }, 10);
@@ -390,23 +471,20 @@ document.getElementById("closeWishBtn").addEventListener("click", () => {
 wishModal.classList.remove("active");
 setTimeout(() => { wishModal.style.display = "none"; controls.enabled = true; }, 400);
 });
+// XỬ LÝ NÚT NHẠC VÀ NÚT ĐẶT LẠI GÓC NHÌN
 const bgm = document.getElementById("bgm");
 const audioBtn = document.getElementById("audio-btn");
-const musicIcon = document.getElementById("music-icon");
 let isPlaying = false;
 audioBtn.addEventListener("click", () => {
-if (isPlaying) {
-bgm.pause();
-musicIcon.className = "fas fa-music";
-audioBtn.style.background = "rgba(255, 215, 0, 0.15)";
-} else {
-bgm.play().catch(e => console.log(e));
-musicIcon.className = "fas fa-pause";
-audioBtn.style.background = "#ffd700";
-audioBtn.style.color = "#0c061a";
-}
+if (isPlaying) { bgm.pause(); audioBtn.style.color = "#ffffff"; }
+else { bgm.play().catch(e => console.log(e)); audioBtn.style.color = "#ffd700"; }
 isPlaying = !isPlaying;
 });
+document.getElementById("reset-cam-btn").addEventListener("click", () => {
+camera.position.set(0, 9, 32);
+controls.target.copy(DEFAULT_CAM_TARGET);
+});
+// VÒNG LẶP HOẠT ẢNH CHUYỂN ĐỘNG VÔ TẬN
 const clock = new THREE.Clock();
 function animate() {
 requestAnimationFrame(animate);
@@ -416,19 +494,19 @@ islandGroup.position.y = Math.sin(time * 0.8) * 0.25;
 leavesGroup.children.forEach((child, index) => {
 child.position.y += Math.sin(time * 1.1 + index) * 0.003;
 });
-rabbitGroup.position.y = 5.7 + Math.abs(Math.sin(time * 2.6)) * 0.35;
-const posAttr = fireflies.geometry.attributes.position;
-for(let i=0; i<particleCount; i++) {
-posAttr.array[i3] += speeds[i].x;
-posAttr.array[i3+1] += speeds[i].y;
-posAttr.array[i3+2] += speeds[i].z;
-if(posAttr.array[i3+1] > 32) {
-posAttr.array[i3+1] = -3;
-posAttr.array[i3] = (Math.random() - 0.5) * 70;
-posAttr.array[i*3+2] = (Math.random() - 0.5) * 70;
+rabbitGroup.position.y = 3.95 + Math.abs(Math.sin(time * 2.6)) * 0.35;
+const fireflyPosAttr = fireflies.geometry.attributes.position;
+for(let i=0; i<fireflyCount; i++) {
+fireflyPosAttr.array[i3] += fireflySpeeds[i].x;
+fireflyPosAttr.array[i3+1] += fireflySpeeds[i].y;
+fireflyPosAttr.array[i3+2] += fireflySpeeds[i].z;
+if(fireflyPosAttr.array[i3+1] > 32) {
+fireflyPosAttr.array[i3+1] = -3;
+fireflyPosAttr.array[i3] = (Math.random() - 0.5) * 70;
+fireflyPosAttr.array[i*3+2] = (Math.random() - 0.5) * 70;
 }
 }
-posAttr.needsUpdate = true;
+fireflyPosAttr.needsUpdate = true;
 for(let i = lanterns.length - 1; i >= 0; i--) {
 const l = lanterns[i];
 l.position.y += l.userData.speedY;
