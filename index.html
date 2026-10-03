@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trung Thu 3D - Vũ Trụ Đêm Rằm</title>
     <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="stylesheet" href="assets/css.css">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #060312;
+            background-color: #05050a;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         #webgl-container {
@@ -40,7 +39,7 @@
         }
         .control-btn:hover {
             background: #ffd700;
-            color: #060312;
+            color: #05050a;
             box-shadow: 0 0 20px #ffd700;
         }
         .brand-title {
@@ -54,43 +53,78 @@
         .brand-title h1 {
             font-size: 48px;
             margin: 0 0 5px 0;
+            text-shadow: 0 0 20px rgba(255,255,255,0.4);
         }
         .brand-title p {
             font-size: 18px;
             margin: 0;
             opacity: 0.7;
         }
+        .wish-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.75);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .wish-modal.active { display: flex; }
+        .wish-card {
+            width: 90%;
+            max-width: 320px;
+            background: #150f2e;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ffd700;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .card-body img {
+            width: 100% !important;
+            max-width: 180px !important;
+            height: auto !important;
+            border-radius: 8px;
+            margin: 0 auto 15px auto;
+            display: block;
+        }
     </style>
 </head>
 <body>
-
     <div class="brand-title">
         <h1>Trung thu</h1>
         <p>Tết trung thu đoàn viên</p>
     </div>
-
     <div class="top-bar">
         <button class="control-btn" id="audio-btn"><i class="fas fa-music"></i> Bật Nhạc</button>
     </div>
-
     <div id="webgl-container"></div>
-
     <div class="wish-modal" id="wishModal">
         <div class="wish-card">
             <button class="close-btn" id="closeWishBtn">&times;</button>
             <div class="card-body">
-                <img src="" id="wishImage" alt="Hình ảnh Trung Thu">
+                <img src="" id="wishImage" alt="Hình ảnh">
                 <p id="wishText"></p>
             </div>
         </div>
     </div>
-
     <audio id="bgm" src="assets/1.mp3" loop></audio>
-
-    <!-- ĐƯỜNG DẪN GỌI FILE THƯ VIỆN GỐC CHUẨN XÁC -->
-    <script src="assets/three.min.js"></script>
-    <script src="assets/OrbitControls.js"></script>
+    <script src="https://cloudflare.com"></script>
+    <script src="https://jsdelivr.net"></script>
     <script src="assets/script.js"></script>
-
 </body>
 </html>
