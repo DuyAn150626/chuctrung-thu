@@ -6,6 +6,20 @@ const isMobile =
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x060312, 0.008);
+// ====== CODE TẠO MẶT TRĂNG PHÁT SÁNG ======
+// 1. Tạo hình cầu mặt trăng
+const moonGeometry = new THREE.SphereGeometry(25, 32, 32);
+// 2. Tạo chất liệu màu vàng nhạt ấm áp cho mặt trăng
+const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xfffad0 });
+const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+
+// 3. Đặt vị trí mặt trăng: X=0 (ở giữa), Y=70 (trên cao), Z=-250 (đẩy ra sau hòn đảo)
+moon.position.set(0, 70, -250);
+
+// 4. Bắt buộc phải thêm mặt trăng vào không gian 3D để hiển thị
+scene.add(moon);
+// ==========================================
+
 
 const camera = new THREE.PerspectiveCamera(
   isMobile ? 60 : 45,
