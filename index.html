@@ -105,26 +105,34 @@
     </style>
 </head>
 <body>
+
     <div class="brand-title">
         <h1>Trung thu</h1>
         <p>Tết trung thu đoàn viên</p>
     </div>
+
     <div class="top-bar">
         <button class="control-btn" id="audio-btn"><i class="fas fa-music"></i> Bật Nhạc</button>
     </div>
+
     <div id="webgl-container"></div>
+
     <div class="wish-modal" id="wishModal">
         <div class="wish-card">
             <button class="close-btn" id="closeWishBtn">&times;</button>
             <div class="card-body">
-                <img src="" id="wishImage" alt="Hình ảnh">
+                <img src="" id="wishImage" alt="Hình ảnh Trung Thu">
                 <p id="wishText"></p>
             </div>
         </div>
     </div>
+
     <audio id="bgm" src="assets/1.mp3" loop></audio>
-    <script src="https://cloudflare.com"></script>
-    <script src="https://jsdelivr.net"></script>
+
+    <!-- GỌI ĐÚNG FILE THƯ VIỆN CỤC BỘ TRONG THƯ MỤC ASSETS ĐỂ TRÁNH LỖI MÀN HÌNH ĐEN -->
+    <script src="assets/three.min.js"></script>
+    <script src="assets/OrbitControls.js"></script>
     <script src="assets/script.js"></script>
+
 </body>
 </html>
