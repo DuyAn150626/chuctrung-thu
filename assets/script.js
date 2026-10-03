@@ -6,6 +6,7 @@ const isMobile =
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x060312, 0.008);
+;
 // ====== CODE TẠO MẶT TRĂNG VÀNG SÁNG RỰC RỠ ======
 const moonGeometry = new THREE.SphereGeometry(18, 32, 32); 
 const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xfff4b8 }); 
