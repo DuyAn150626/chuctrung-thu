@@ -22,7 +22,6 @@
             left: 0;
             z-index: 1;
         }
-        /* NÚT BẬT NHẠC GÓC TRÊN BÊN PHẢI CHUẨN VIDEO */
         .music-btn-container {
             position: absolute;
             top: 25px;
@@ -49,7 +48,6 @@
             color: #0c061a;
             box-shadow: 0 0 25px #ffd700;
         }
-        /* DÒNG CHỮ HƯỚNG DẪN DƯỚI ĐÁY MÀN HÌNH THEO VIDEO GỐC */
         .bottom-instruction {
             position: absolute;
             bottom: 40px;
@@ -64,7 +62,6 @@
             font-weight: 500;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
-        /* KHUNG THIỆP CHÚC MỪNG HOẠT HỌA THEO VIDEO GỐC */
         .wish-modal {
             position: fixed;
             top: 0;
@@ -158,19 +155,16 @@
 </head>
 <body>
 
-    <!-- Nút nghe nhạc dạng tròn nhỏ góc phải như video -->
     <div class="music-btn-container">
         <button class="music-control" id="audio-btn">
             <i class="fas fa-music" id="music-icon"></i>
         </button>
     </div>
 
-    <!-- Dòng chữ hướng dẫn dưới cùng cố định -->
     <div class="bottom-instruction">Chạm vào lồng đèn để xem lời chúc Trung Thu</div>
 
     <div id="webgl-container"></div>
 
-    <!-- Khung thiệp hoạt họa bung mở mượt mà kèm ảnh bo góc vừa khít -->
     <div class="wish-modal" id="wishModal">
         <div class="wish-card">
             <button class="close-btn" id="closeWishBtn">&times;</button>
@@ -185,7 +179,7 @@
 
     <audio id="bgm" src="assets/1.mp3" loop></audio>
 
-    <!-- Nhúng thư viện đồ họa ổn định trực tuyến -->
+    <!-- NHÚNG LINK THƯ VIỆN CHUẨN XÁC 100% ĐỂ RENDERING HÌNH KHỐI -->
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
     
@@ -194,11 +188,9 @@
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
         const scene = new THREE.Scene();
-        // PHỤC DỰNG: Sương mù màu cam tím mờ ảo bao phủ rực rỡ theo đúng hệ màu video gốc
         scene.fog = new THREE.FogExp2(0x0e061a, 0.007);
 
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        // TỌA ĐỘ CHUẨN: Đưa camera về tầm nhìn gần sát, bao quát trọn hòn đảo rực rỡ
         camera.position.set(0, 9, 32);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -216,7 +208,6 @@
         controls.minDistance = 15;
         controls.maxDistance = 80;
 
-        // ====== 1. HỆ THỐNG ÁNH SÁNG ĐÊM TRĂM VÀNG ẤM ======
         const ambientLight = new THREE.AmbientLight(0x2d1f47, 1.5); 
         scene.add(ambientLight);
 
@@ -227,24 +218,20 @@
         dirLight.shadow.mapSize.height = 1024;
         scene.add(dirLight);
 
-        // ====== 2. PHỤC DỰNG MẶT TRĂNG TO LỚN CÓ HÀO QUANG THEO VIDEO ======
         const moonGroup = new THREE.Group();
         moonGroup.position.set(-35, 42, -130);
         
-        // Lõi quả cầu mặt trăng xám bạc chuẩn ảnh gốc
         const moonGeo = new THREE.SphereGeometry(24, 32, 32);
         const moonMat = new THREE.MeshBasicMaterial({ color: 0x8a869a }); 
         const moonMesh = new THREE.Mesh(moonGeo, moonMat);
         moonGroup.add(moonMesh);
 
-        // Vòng hào quang phát sáng mờ bao bọc ngoài mặt trăng
         const glowGeo = new THREE.SphereGeometry(26, 32, 32);
         const glowMat = new THREE.MeshBasicMaterial({ color: 0xfffdd0, transparent: true, opacity: 0.08, side: THREE.BackSide });
         const glowMesh = new THREE.Mesh(glowGeo, glowMat);
         moonGroup.add(glowMesh);
         scene.add(moonGroup);
 
-        // DANH SÁCH LỜI CHÚC TRUNG THU CỦA AN
         const wishList = [
           { wish: "Cầu chúc cho mọi nguyện ước của người thương đêm nay sẽ trở thành hiện thực.", imgUrl: "./assets/1.jpg" },
           { wish: "Chúc người thương và gia đình một mùa Trung Thu đoàn viên, tràn ngập niềm vui và hạnh phúc!", imgUrl: "./assets/2.jpg" },
@@ -252,7 +239,6 @@
           { wish: "Chúc người thương luôn giữ được sự hồn nhiên, yêu đời và rạng rỡ như ánh trăng rằm.", imgUrl: "./assets/1.jpg" }
         ];
 
-        // ====== 3. PHỤC DỰNG ĐẢO ĐÁ GỒ GHỀ KHỐI GÓC CẠNH ĐẸP MẮT ======
         const islandGroup = new THREE.Group();
         scene.add(islandGroup);
 
@@ -266,24 +252,26 @@
             }
         }
         islandGeo.computeVertexNormals();
-const islandMat = new THREE.MeshStandardMaterial({ color: 0x22152b, roughness: 0.75, metalness: 0.1 });
-const island = new THREE.Mesh(islandGeo, islandMat);
-island.position.y = 0;
-island.receiveShadow = true;
-island.castShadow = true;
-islandGroup.add(island);
-// Bề mặt thảm cỏ tối trên đảo
-const grassGeo = new THREE.CylinderGeometry(15.2, 15.2, 0.2, 16);
-const grassMat = new THREE.MeshStandardMaterial({ color: 0x33143b, roughness: 0.7 });
-const grass = new THREE.Mesh(grassGeo, grassMat);
-grass.position.y = 5.5;
-grass.receiveShadow = true;
-islandGroup.add(grass);
-// ====== 4. TẠO CÂY HOA ANH ĐÀO HỒNG RỰC PHÁT SÁNG ======
-const treeGroup = new THREE.Group();
-treeGroup.position.set(0, 5.5, 0);
-const trunkGeo = new THREE.CylinderGeometry(0.4, 0.8, 5.5, 8);
-const trunkMat = new THREE.MeshStandardMaterial({ color: 0x140a14, roughness: 0.9 });
+
+        const islandMat = new THREE.MeshStandardMaterial({ color: 0x22152b, roughness: 0.75, metalness: 0.1 });
+        const island = new THREE.Mesh(islandGeo, islandMat);
+        island.position.y = 0;
+        island.receiveShadow = true;
+        island.castShadow = true;
+        islandGroup.add(island);
+
+        const grassGeo = new THREE.CylinderGeometry(15.2, 15.2, 0.2, 16);
+        const grassMat = new THREE.MeshStandardMaterial({ color: 0x33143b, roughness: 0.7 });
+        const grass = new THREE.Mesh(grassGeo, grassMat);
+        grass.position.y = 5.5;
+        grass.receiveShadow = true;
+        islandGroup.add(grass);
+
+        const treeGroup = new THREE.Group();
+        treeGroup.position.set(0, 5.5, 0);
+
+        const trunkGeo = new THREE.CylinderGeometry(0.4, 0.8, 5.5, 8);
+        const trunkMat = new THREE.MeshStandardMaterial({ color: 0x140a14, roughness: 0.9 });
 const trunk = new THREE.Mesh(trunkGeo, trunkMat);
 trunk.position.y = 2.75;
 trunk.castShadow = true;
@@ -305,7 +293,6 @@ leavesGroup.add(mesh);
 }
 treeGroup.add(leavesGroup);
 islandGroup.add(treeGroup);
-// ====== 5. THỎ NGỌC NHỎ TRÊN THẢM CỎ ======
 const rabbitGroup = new THREE.Group();
 rabbitGroup.position.set(-1.5, 5.7, 3);
 rabbitGroup.scale.set(0.35, 0.35, 0.35);
@@ -319,26 +306,23 @@ const earL = new THREE.Mesh(earGeo, earMat); earL.position.set(-0.2, 2.4, 0.2);
 const earR = new THREE.Mesh(earGeo, earMat); earR.position.set(0.2, 2.4, 0.2);
 rabbitGroup.add(rabbitBody, head, earL, earR);
 islandGroup.add(rabbitGroup);
-// ====== 6. HIỆU ỨNG HẠT ĐOM ĐÓM SÁNG VÀNG LUNG LINH ======
 const particleCount = isMobile ? 50 : 130;
 const particleGeo = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
-const pSpeeds = [];
+const speeds = [];
 for(let i=0; i<particleCount; i++) {
 positions[i3] = (Math.random() - 0.5) * 70;
 positions[i3+1] = Math.random() * 35 - 3;
 positions[i*3+2] = (Math.random() - 0.5) * 70;
-pSpeeds.push({ x: (Math.random() - 0.5) * 0.04, y: Math.random() * 0.03 + 0.01, z: (Math.random() - 0.5) * 0.04 });
+speeds.push({ x: (Math.random() - 0.5) * 0.04, y: Math.random() * 0.03 + 0.01, z: (Math.random() - 0.5) * 0.04 });
 }
 particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 const fireflies = new THREE.Points(particleGeo, new THREE.PointsMaterial({ color: 0xffd700, size: isMobile ? 0.5 : 0.35, transparent: true, opacity: 0.85 }));
 scene.add(fireflies);
-// ====== 7. HỆ THỐNG LỒNG ĐÈN THẢ TRÔI HÌNH CỔ ĐIỂN VÀNG CAM ======
 const lanterns = [];
 const lanternCount = isMobile ? 18 : 38;
 function createLantern(isInitial = false) {
 const lanternGroup = new THREE.Group();
-// Thiết kế thắt ngỏ trên dưới chuẩn video gốc
 const bodyMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 0.85, 2.3, 8), new THREE.MeshBasicMaterial({ color: 0xff9422 }));
 bodyMesh.name = "click_lantern_part";
 lanternGroup.add(bodyMesh);
@@ -359,7 +343,6 @@ scene.add(lanternGroup);
 lanterns.push(lanternGroup);
 }
 for(let i=0; i<lanternCount; i++) createLantern(true);
-// ====== 8. ĐỒNG BỘ THUẬT TOÁN TIA LA-ZE CLICK ĐÈN LỒNG MỞ THIỆP MƯỢT MÀ ======
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const wishModal = document.getElementById("wishModal");
@@ -384,7 +367,6 @@ const targetRoot = intersects.object.userData.rootGroup;
 if(targetRoot && targetRoot.userData.wish) {
 controls.enabled = false;
 wishText.textContent = ${targetRoot.userData.wish};
-// Sửa lỗi hiển thị ảnh: Nếu có link ảnh thì bật lên, không có thì ẩn khung ảnh đi
 if(targetRoot.userData.imgUrl) {
 wishImage.src = targetRoot.userData.imgUrl;
 wishImage.style.display = "block";
@@ -402,13 +384,12 @@ handleSelection(e.clientX, e.clientY);
 });
 window.addEventListener("touchstart", (e) => {
 if (e.target.tagName === 'BUTTON' || e.target.closest('#wishModal')) return;
-if(e.touches.length > 0) handleSelection(e.touches[0].clientX, e.touches[0].clientY);
+if(e.touches.length > 0) handleSelection(e.touches.clientX, e.touches.clientY);
 }, { passive: true });
 document.getElementById("closeWishBtn").addEventListener("click", () => {
 wishModal.classList.remove("active");
 setTimeout(() => { wishModal.style.display = "none"; controls.enabled = true; }, 400);
 });
-// ====== 9. XỬ LÝ NÚT NHẠC NỀN TRÒN ======
 const bgm = document.getElementById("bgm");
 const audioBtn = document.getElementById("audio-btn");
 const musicIcon = document.getElementById("music-icon");
@@ -426,23 +407,21 @@ audioBtn.style.color = "#0c061a";
 }
 isPlaying = !isPlaying;
 });
-// ====== 10. VÒNG LẶP HOẠT ẢNH CHUYỂN ĐỘNG VÔ TẬN ======
 const clock = new THREE.Clock();
 function animate() {
 requestAnimationFrame(animate);
 const time = clock.getElapsedTime();
 islandGroup.rotation.y = time * 0.035;
-islandGroup.position.y = Math.sin(time * 0.5) * 0.25;
+islandGroup.position.y = Math.sin(time * 0.8) * 0.25;
 leavesGroup.children.forEach((child, index) => {
 child.position.y += Math.sin(time * 1.1 + index) * 0.003;
 });
 rabbitGroup.position.y = 5.7 + Math.abs(Math.sin(time * 2.6)) * 0.35;
-// Đom đóm bay lơ lửng
 const posAttr = fireflies.geometry.attributes.position;
 for(let i=0; i<particleCount; i++) {
-posAttr.array[i3] += pSpeeds[i].x;
-posAttr.array[i3+1] += pSpeeds[i].y;
-posAttr.array[i3+2] += pSpeeds[i].z;
+posAttr.array[i3] += speeds[i].x;
+posAttr.array[i3+1] += speeds[i].y;
+posAttr.array[i3+2] += speeds[i].z;
 if(posAttr.array[i3+1] > 32) {
 posAttr.array[i3+1] = -3;
 posAttr.array[i3] = (Math.random() - 0.5) * 70;
@@ -450,7 +429,6 @@ posAttr.array[i*3+2] = (Math.random() - 0.5) * 70;
 }
 }
 posAttr.needsUpdate = true;
-// Đèn lồng bay lên trời lượn sóng sinh động
 for(let i = lanterns.length - 1; i >= 0; i--) {
 const l = lanterns[i];
 l.position.y += l.userData.speedY;
@@ -466,3 +444,4 @@ camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth, window.innerHeight);
 });
 animate();
+
