@@ -634,6 +634,8 @@ function onPointerUp(event) {
 
     wishText.textContent = `"${selectedLantern.userData.wish}"`;
     wishImage.src = selectedLantern.userData.imgUrl;
+    wishImage.style.cssText = "width: 100% !important; max-width: 180px !important; height: auto !important; display: block !important; margin: 0 auto 15px auto !important; border-radius: 8px;";
+
 
     setTimeout(() => {
       wishModal.classList.add("active");
