@@ -50,6 +50,29 @@
         }
         /* Khung hiển thị chữ Tiêu đề góc trái */
         .brand-title {
+            /* Tự động thu nhỏ ảnh vừa khít với chiều rộng của tấm thiệp */
+.card-body img {
+    width: 100%;
+    max-width: 280px; /* Giới hạn chiều rộng ảnh tối đa không quá 280px */
+    height: auto;     /* Tự động co giãn chiều cao theo tỷ lệ ảnh */
+    border-radius: 8px; /* Bo tròn nhẹ các góc ảnh cho đẹp mắt */
+    display: block;
+    margin: 0 auto 15px auto; /* Căn chỉnh ảnh nằm chính giữa tấm thiệp */
+}
+
+/* Giới hạn kích thước toàn bộ hộp thoại chúc mừng không bị tràn màn hình */
+.wish-card {
+    width: 90%;
+    max-width: 360px; /* Chiều rộng tối đa của tấm thiệp */
+    max-height: 85vh; /* Chiều cao tối đa bằng 85% màn hình để tránh bị kéo quá dài */
+    overflow-y: auto; /* Tự động tạo thanh cuộn nhỏ bên trong nếu chữ quá dài */
+    padding: 20px;
+    background: #1a0f2e;
+    border: 2px solid #ffd700;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
             position: absolute;
             bottom: 40px;
             left: 40px;
