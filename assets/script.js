@@ -60,7 +60,6 @@ const moonMaterial = new THREE.MeshBasicMaterial({
     opacity: 1.0 
 });
 const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-// Vị trí kéo lại gần và đưa sang góc phải để nổi bật, không bị sương mù che phủ
 moon.position.set(90, 70, -200);
 scene.add(moon);
 
@@ -95,14 +94,12 @@ island.position.y = -4;
 island.receiveShadow = true;
 islandGroup.add(island);
 
-// Tạo thảm cỏ trên đảo
 const grassGeo = new THREE.CylinderGeometry(20.2, 20.2, 0.5, 16);
 const grassMat = new THREE.MeshStandardMaterial({ color: 0x3d2563, roughness: 0.6 });
 const grass = new THREE.Mesh(grassGeo, grassMat);
 grass.position.y = 0.25;
 islandGroup.add(grass);
 
-// Tạo hiệu ứng hạt đom đóm bay quanh đảo
 const particleCount = isMobile ? 40 : 120;
 const particleGeo = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
@@ -169,7 +166,7 @@ for(let i=0; i<lanternCount; i++) {
     createLantern(true);
 }
 
-// ====== 6. XỬ LÝ SỰ KIỆN CLICK CHUỘT / CHẠM MÀN HÌNH VÀO ĐÈN LỒNG ======
+// ====== 6. XỬ LÝ SỰ KIỆN CLICK CHUỘT VÀO ĐÈN LỒNG ======
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const wishModal = document.getElementById("wishModal");
@@ -177,14 +174,7 @@ const wishText = document.getElementById("wishText");
 const wishImage = document.getElementById("wishImage");
 const closeWishBtn = document.getElementById("closeWishBtn");
 
-function onPointerDown(event) {
-    if (event.target.tagName === 'BUTTON' || event.target.closest('#wishModal')) return;
-    
-    const clientX = event.clientX || (event.touches && event.touches[0].clientX);
-    const clientY = event.clientY || (event.touches && event.touches[0].clientY);
-    
-    if(!clientX || !clientY) return;
-
+function handleSelection(clientX, clientY) {
     mouse.x = (clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 
@@ -206,19 +196,29 @@ function onPointerDown(event) {
         const targetGroup = intersects[0].object.userData.parentGroup;
         if(targetGroup && targetGroup.userData.wish) {
             controls.enabled = false;
-            
             wishText.textContent = `${targetGroup.userData.wish}`;
             wishImage.src = targetGroup.userData.imgUrl;
-            
-            // ÉP KÍCH THƯỚC ẢNH VỪA KHÍT TẤM THIỆP CHUẨN XÁC
             wishImage.style.cssText = "width: 100% !important; max-width: 180px !important; height: auto !important; display: block !important; margin: 0 auto 15px auto !important; border-radius: 8px;";
-            
             wishModal.classList.add("active");
         }
     }
 }
 
+function onPointerDown(event) {
+    if (event.target.tagName === 'BUTTON' || event.target.closest('#wishModal')) return;
+    handleSelection(event.clientX, event.clientY);
+}
+
+function onTouchStart(event) {
+    if (event.target.tagName === 'BUTTON' || event.target.closest('#wishModal')) return;
+    if(event.touches && event.touches.length > 0) {
+        handleSelection(event.touches[0].clientX, event.touches[0].clientY);
+    }
+}
+
 window.addEventListener("pointerdown", onPointerDown);
+window.addEventListener("touchstart", onTouchStart, { passive: true });
+
 if(closeWishBtn) {
     closeWishBtn.addEventListener("click", () => {
         wishModal.classList.remove("active");
@@ -249,14 +249,11 @@ const clock = new THREE.Clock();
 
 function animate() {
     requestAnimationFrame(animate);
-    
     const time = clock.getElapsedTime();
     
-    // Xoay nhẹ hòn đảo bồng bềnh
     islandGroup.rotation.y = time * 0.05;
     islandGroup.position.y = Math.sin(time * 0.8) * 0.4;
     
-    // Điều khiển đom đóm bay chuyển động
     const posAttr = fireflies.geometry.attributes.position;
     for(let i=0; i<particleCount; i++) {
         posAttr.array[i*3] += speeds[i].x;
@@ -271,7 +268,6 @@ function animate() {
     }
     posAttr.needsUpdate = true;
     
-    // Điều khiển lồng đèn bay lên trời
     for(let i = lanterns.length - 1; i >= 0; i--) {
         const l = lanterns[i];
         l.position.y += l.userData.speedY;
@@ -280,3 +276,12 @@ function animate() {
         if(l.position.y > 75) {
             scene.remove(l);
             lanterns.splice(i, 1);
+            createLantern(false);
+        }
+    }
+    
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+window.addEventListener("resize", () => {
