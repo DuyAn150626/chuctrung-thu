@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trung Thu 3D - Vũ Trụ Đêm Rằm</title>
-    <!-- Nhúng thư viện icon trực tuyến -->
     <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="assets/css.css">
     <style>
         body {
             margin: 0;
@@ -37,7 +37,6 @@
             font-size: 14px;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
         }
         .control-btn:hover {
             background: #ffd700;
@@ -55,56 +54,11 @@
         .brand-title h1 {
             font-size: 48px;
             margin: 0 0 5px 0;
-            text-shadow: 0 0 20px rgba(255,255,255,0.4);
         }
         .brand-title p {
             font-size: 18px;
             margin: 0;
             opacity: 0.7;
-        }
-        /* ĐỊNH DẠNG KHUNG THIỆP CHUẨN XINH XẮN KHÔNG BỊ TRÀN */
-        .wish-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.75);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-        .wish-modal.active { display: flex; }
-        .wish-card {
-            width: 90%;
-            max-width: 320px;
-            background: #150f2e;
-            border: 2px solid #ffd700;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            position: relative;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #ffd700;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .card-body img {
-            width: 100% !important;
-            max-width: 180px !important;
-            height: auto !important;
-            border-radius: 8px;
-            margin: 0 auto 15px auto;
-            display: block;
         }
     </style>
 </head>
@@ -131,14 +85,11 @@
         </div>
     </div>
 
-    <!-- Gọi file nhạc nền -->
     <audio id="bgm" src="assets/1.mp3" loop></audio>
 
-    <!-- Nhúng thư viện đồ họa 3D trực tuyến để tránh lỗi thiếu file cục bộ -->
-    <script src="https://cloudflare.com"></script>
-    <script src="https://jsdelivr.net"></script>
-    
-    <!-- Gọi file logic xử lý chính của bạn -->
+    <!-- ĐƯỜNG DẪN GỌI FILE THƯ VIỆN GỐC CHUẨN XÁC -->
+    <script src="assets/three.min.js"></script>
+    <script src="assets/OrbitControls.js"></script>
     <script src="assets/script.js"></script>
 
 </body>
