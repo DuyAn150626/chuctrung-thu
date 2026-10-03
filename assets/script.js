@@ -6,21 +6,15 @@ const isMobile =
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x060312, 0.008);
-// ====== CODE TẠO MẶT TRĂNG MÀU VÀNG SÁNG RỰC ======
-const moonGeometry = new THREE.SphereGeometry(35, 32, 32); // Đã tăng kích thước lên 35 cho trăng to đẹp hơn
-const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xfff3a8 }); // Màu vàng sáng xuyên sương mù
+// ====== CODE TẠO MẶT TRĂNG VÀNG SÁNG RỰC RỠ ======
+const moonGeometry = new THREE.SphereGeometry(18, 32, 32); 
+const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xfff4b8 }); 
 const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-moon.position.set(100, 80, -250); // Căn vị trí x sang phải 100 để không bị cây hoa che mất
+// Kéo mặt trăng lại gần tọa độ Z = -100 để hiện rõ mượt mà xuyên sương mù
+moon.position.set(50, 40, -100); 
 scene.add(moon);
 // ==================================================
 
-
-// 3. Đặt vị trí mặt trăng: X=0 (ở giữa), Y=70 (trên cao), Z=-250 (đẩy ra sau hòn đảo)
-moon.position.set(0, 70, -250);
-
-// 4. Bắt buộc phải thêm mặt trăng vào không gian 3D để hiển thị
-scene.add(moon);
-// ==========================================
 
 
 const camera = new THREE.PerspectiveCamera(
