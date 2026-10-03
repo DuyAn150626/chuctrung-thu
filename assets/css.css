@@ -195,6 +195,26 @@ html {
   0% {
     opacity: 0.4;
   }
+  /* Ép bức ảnh thu nhỏ lại bắt buộc bất kể có bị file khác ghi đè */
+.card-body img, #wishImage {
+    width: 100% !important;
+    max-width: 200px !important; /* Thu nhỏ chiều rộng lại còn 200px cho vừa khít */
+    height: auto !important;     /* Tự động co giãn chiều cao theo tỷ lệ ảnh */
+    border-radius: 8px !important;
+    display: block !important;
+    margin: 0 auto 15px auto !important; /* Căn giữa bức ảnh */
+}
+
+/* Căn chỉnh lại khung thiệp cho nhỏ gọn và đẹp mắt */
+.wish-card {
+    width: 90% !important;
+    max-width: 320px !important;
+    padding: 15px !important;
+    background: #1a0f2e !important;
+    border: 2px solid #ffd700 !important;
+    border-radius: 12px !important;
+}
+
   100% {
     opacity: 0.95;
   }
