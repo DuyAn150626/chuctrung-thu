@@ -4,317 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trung Thu 3D - Vũ Trụ Đêm Rằm</title>
+    <!-- Khai báo thư viện giao diện nút bấm và hiệu ứng font chữ nền -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="assets/css.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            background: #050510;
-            height: 100vh;
+            margin: 0;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Arial', sans-serif;
-            perspective: 1200px;
+            background-color: #060312;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        /* Khung chứa các slide */
-        .slider-container {
-            position: relative;
+        #webgl-container {
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-        }
-
-        .slide {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-            transition: all 0.8s ease-in-out;
-            opacity: 0;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        /* --- SLIDE 1: KHÔNG GIAN CÂY HOA & THỎ NGỌC --- */
-        .scene-3d {
-            position: relative;
-            width: 600px;
-            height: 500px;
-            transform-style: preserve-3d;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.1s ease-out;
-        }
-
-        /* Ánh trăng siêu lớn phía sau */
-        .giant-moon {
-            position: absolute;
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle at 30% 30%, #fffdf0 0%, #ffeb3b 70%, #fbc02d 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 100px 30px rgba(253, 216, 53, 0.4);
-            transform: translateZ(-150px) translateY(-50px);
-        }
-
-        /* Cây cổ thụ phát sáng màu hồng tím rực rỡ */
-        .magic-tree {
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(255,105,180,0.9) 0%, rgba(186,85,211,0.6) 60%, transparent 100%);
-            border-radius: 50%;
-            filter: blur(10px) drop-shadow(0 0 40px #ff69b4);
-            transform: translateZ(-50px) translateY(-40px);
-            animation: pulseTree 4s ease-in-out infinite alternate;
-        }
-
-        /* Nhánh cây giả lập phủ bóng */
-        .magic-tree::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 180px;
-            background: #1a0f2e;
-            bottom: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 10px;
-        }
-
-        /* Đảo đá bồng bềnh */
-        .floating-island {
-            position: absolute;
-            width: 240px;
-            height: 120px;
-            background: #110d24;
-            border-top: 4px solid #ba55d3;
-            border-radius: 50% / 100% 100% 0% 0%;
-            bottom: 60px;
-            transform: translateZ(20px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-
-        /* Thỏ Ngọc tinh nghịch */
-        .rabbit {
-            position: absolute;
-            width: 40px;
-            height: 60px;
-            background: #ffffff;
-            border-radius: 50% 50% 40% 40%;
-            bottom: 140px;
-            transform: translateZ(60px);
-            box-shadow: 0 0 20px #ffffff;
-            animation: bunnyHop 1s ease-in-out infinite alternate;
-        }
-
-        /* Tai thỏ */
-        .rabbit::before, .rabbit::after {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 25px;
-            background: #ffffff;
-            border-radius: 10px;
-            top: -18px;
-        }
-        .rabbit::before { left: 6px; transform: rotate(-5deg); }
-        .rabbit::after { right: 6px; transform: rotate(5deg); }
-
-        /* Đèn lồng bay thả trôi xung quanh */
-        .lantern-floating {
-            position: absolute;
-            width: 25px;
-            height: 45px;
-            background: #ff4d4d;
-            border: 1px solid #ffd700;
-            box-shadow: 0 0 15px #ff4d4d;
-            border-radius: 4px;
-        }
-        .lantern-floating::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 15px;
-            background: #ffd700;
-            bottom: -15px;
-            left: 50%;
-        }
-
-        /* --- SLIDE 2: ĐÈN LỒNG TRUNG TÂM & VÒNG TRÒN CỔ TRUYỀN --- */
-        .ancient-gate {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            background: #b71c1c; /* Nền đỏ thẫm quý phái */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-        }
-
-        .gold-pattern {
-            width: 450px;
-            height: 450px;
-            border: 4px solid #ffd700;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 30px rgba(255,215,0,0.3);
-            transform: translateZ(30px);
-            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,215,0,0.02) 10px, rgba(255,215,0,0.02) 20px);
-        }
-
-        .center-lantern {
-            width: 90px;
-            height: 120px;
-            background: radial-gradient(circle at center, #ff5252 0%, #d50000 100%);
-            border-radius: 40px / 20px;
-            border: 2px solid #ffd700;
-            box-shadow: 0 0 40px #ff1744;
-            transform: translateZ(80px);
-            animation: swingLantern 3s ease-in-out infinite alternate;
-        }
-
-        /* --- PHẦN CHỮ TIÊU ĐỀ TRUNG THU CỐ ĐỊNH GÓC TRÁI --- */
-        .text-overlay {
-            position: absolute;
-            bottom: 12%;
-            left: 8%;
-            z-index: 100;
-            color: #ffffff;
-            pointer-events: none;
-        }
-
-        .text-overlay h1 {
-            font-size: 56px;
-            letter-spacing: 2px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            margin-bottom: 5px;
-            font-weight: 800;
-        }
-
-        .text-overlay p {
-            font-size: 20px;
-            opacity: 0.8;
-            letter-spacing: 1px;
-        }
-
-        /* --- NÚT ĐIỀU HƯỚNG SLIDE TRÁI / PHẢI --- */
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 200;
-            font-size: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-        }
-
-        .nav-btn:hover {
-            background: #ffd700;
-            color: #000;
-            box-shadow: 0 0 15px #ffd700;
-        }
-
-        .prev-btn { left: 4%; }
-        .next-btn { right: 4%; }
-
-        /* --- NÚT BẬT/TẮT NHẠC NỀN --- */
-        .music-control {
+        /* Giao diện thanh công cụ cố định góc trên */
+        .top-bar {
             position: absolute;
             top: 20px;
             right: 20px;
-            z-index: 300;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #ffd700;
+            z-index: 10;
+            display: flex;
+            gap: 15px;
+        }
+        .control-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.4);
             color: #ffd700;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 10px rgba(255,215,0,0.2);
-            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
         }
-        
-        .music-control:hover {
+        .control-btn:hover {
             background: #ffd700;
-            color: #000;
+            color: #060312;
+            box-shadow: 0 0 20px #ffd700;
         }
-
-        /* Các hiệu ứng Animation */
-        @keyframes pulseTree {
-            0% { transform: translateZ(-50px) translateY(-40px) scale(0.98); filter: blur(10px) drop-shadow(0 0 35px #ff69b4); }
-            100% { transform: translateZ(-50px) translateY(-40px) scale(1.03); filter: blur(8px) drop-shadow(0 0 55px #ba55d3); }
-        }
-
-        @keyframes bunnyHop {
-            0% { transform: translateZ(60px) translateY(0) scaleY(1); }
-            100% { transform: translateZ(60px) translateY(-15px) scaleY(0.95); }
-        }
-
-        @keyframes swingLantern {
-            0% { transform: translateZ(80px) rotate(-8deg); }
-            100% { transform: translateZ(80px) rotate(8deg); }
-        }
-
-        .star {
+        /* Khung hiển thị chữ Tiêu đề góc trái */
+        .brand-title {
             position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: blink 2s infinite ease-in-out;
+            bottom: 40px;
+            left: 40px;
+            color: #ffffff;
+            z-index: 5;
+            pointer-events: none;
         }
-        @keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+        .brand-title h1 {
+            font-size: 48px;
+            margin: 0 0 5px 0;
+            text-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+        .brand-title p {
+            font-size: 18px;
+            margin: 0;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Khối tiêu đề chữ cố định góc trái màn hình -->
-    <div class="text-overlay">
-        <h1 id="dynamic-title">Trung thu</h1>
-        <p id="dynamic-subtitle">Tết trung thu</p>
+    <!-- Thanh tiêu đề chữ góc màn hình -->
+    <div class="brand-title">
+        <h1>Trung thu</h1>
+        <p>Tết trung thu đoàn viên</p>
     </div>
 
-    <!-- Nút điều hướng slide -->
-    <button class="nav-btn prev-btn" onclick="changeSlide(-1)">❮</button>
-    <button class="nav-btn next-btn" onclick="changeSlide(1)">❯</button>
+    <!-- Thanh công cụ góc trên chứa nút tương tác nhạc -->
+    <div class="top-bar">
+        <button class="control-btn" id="audio-btn">
+            <i class="fas fa-music"></i> Bật Nhạc
+        </button>
+    </div>
 
-    <!-- Nút điều khiển âm thanh độc quyền -->
-    <button class="music-control" id="musicBtn" onclick="toggleMusic()">🎵 Bật Nhạc</button>
+    <!-- Vùng hiển thị không gian Đảo bay đồ họa 3D -->
+    <div id="webgl-container"></div>
 
-    <!-- Thẻ âm thanh tự động lấy nhạc nhẹ không bản quyền thích hợp Trung Thu -->
-    <audio id="bgMusic" loop src="https://soundhelix.com"></audio>
+    <!-- Hộp thoại Modal hiện thiệp chúc mừng kèm ảnh nền khi click lồng đèn -->
+    <div class="wish-modal" id="wishModal">
+        <div class="wish-card">
+            <button class="close-btn" id="closeWishBtn">&times;</button>
+            <div class="card-header">Gửi người thương</div>
+            <div class="card-body">
+                <img src="" id="wishImage" alt="Hình ảnh Trung Thu">
+                <p id="wishText"></p>
+            </div>
+            <div class="card-footer">★ TRUNG THU AN LÀNH ★</div>
+        </div>
+    </div>
 
-    <div class="slider-container">
-        
-        <!-- SLIDE 1: ĐẢO ĐÁ THỎ NGỌC CÂY THẦN -->
+    <!-- Gọi file âm thanh nền hệ thống -->
+    <audio id="bgm" src="assets/1.mp3" loop></audio>
+
+    <!-- KÍCH HOẠT HỆ THỐNG THƯ VIỆN ĐỒ HỌA 3D CHUẨN XÁC -->
+    <!-- Thư viện cốt lõi Three.js -->
+    <script src="assets/three.min.js"></script>
+    <!-- Thư viện bổ trợ OrbitControls điều khiển xoay camera -->
+    <script src="assets/OrbitControls.js"></script>
+    <!-- File xử lý logic thỏ ngọc, hiệu ứng pháo hoa, rải đá và lồng đèn của bạn -->
+    <script src="assets/script.js"></script>
+
+</body>
+</html>
