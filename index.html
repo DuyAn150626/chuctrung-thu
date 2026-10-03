@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trung Thu 3D - Vũ Trụ Đêm Rằm</title>
-    <!-- Khai báo thư viện giao diện nút bấm và hiệu ứng font chữ nền -->
     <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="stylesheet" href="assets/css.css">
     <style>
         body {
             margin: 0;
@@ -22,14 +20,11 @@
             left: 0;
             z-index: 1;
         }
-        /* Giao diện thanh công cụ cố định góc trên */
         .top-bar {
             position: absolute;
             top: 20px;
             right: 20px;
             z-index: 10;
-            display: flex;
-            gap: 15px;
         }
         .control-btn {
             background: rgba(255, 255, 255, 0.08);
@@ -41,38 +36,13 @@
             font-size: 14px;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
         }
         .control-btn:hover {
             background: #ffd700;
             color: #060312;
             box-shadow: 0 0 20px #ffd700;
         }
-        /* Khung hiển thị chữ Tiêu đề góc trái */
         .brand-title {
-            /* Tự động thu nhỏ ảnh vừa khít với chiều rộng của tấm thiệp */
-.card-body img {
-    width: 100%;
-    max-width: 280px; /* Giới hạn chiều rộng ảnh tối đa không quá 280px */
-    height: auto;     /* Tự động co giãn chiều cao theo tỷ lệ ảnh */
-    border-radius: 8px; /* Bo tròn nhẹ các góc ảnh cho đẹp mắt */
-    display: block;
-    margin: 0 auto 15px auto; /* Căn chỉnh ảnh nằm chính giữa tấm thiệp */
-}
-
-/* Giới hạn kích thước toàn bộ hộp thoại chúc mừng không bị tràn màn hình */
-.wish-card {
-    width: 90%;
-    max-width: 360px; /* Chiều rộng tối đa của tấm thiệp */
-    max-height: 85vh; /* Chiều cao tối đa bằng 85% màn hình để tránh bị kéo quá dài */
-    overflow-y: auto; /* Tự động tạo thanh cuộn nhỏ bên trong nếu chữ quá dài */
-    padding: 20px;
-    background: #1a0f2e;
-    border: 2px solid #ffd700;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-}
-
             position: absolute;
             bottom: 40px;
             left: 40px;
@@ -80,59 +50,71 @@
             z-index: 5;
             pointer-events: none;
         }
-        .brand-title h1 {
-            font-size: 48px;
-            margin: 0 0 5px 0;
-            text-shadow: 0 0 20px rgba(255,255,255,0.4);
+        /* --- ĐỊNH DẠNG KHUNG THIỆP CHUẨN KHÔNG BỊ TRÀN --- */
+        .wish-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
         }
-        .brand-title p {
-            font-size: 18px;
-            margin: 0;
-            opacity: 0.7;
+        .wish-modal.active { display: flex; }
+        .wish-card {
+            width: 90%;
+            max-width: 320px;
+            background: #150f2e;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ffd700;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .card-body img {
+            width: 100% !important;
+            max-width: 180px !important;
+            height: auto !important;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-
-    <!-- Thanh tiêu đề chữ góc màn hình -->
     <div class="brand-title">
         <h1>Trung thu</h1>
         <p>Tết trung thu đoàn viên</p>
     </div>
-
-    <!-- Thanh công cụ góc trên chứa nút tương tác nhạc -->
     <div class="top-bar">
-        <button class="control-btn" id="audio-btn">
-            <i class="fas fa-music"></i> Bật Nhạc
-        </button>
+        <button class="control-btn" id="audio-btn"><i class="fas fa-music"></i> Bật Nhạc</button>
     </div>
-
-    <!-- Vùng hiển thị không gian Đảo bay đồ họa 3D -->
     <div id="webgl-container"></div>
-
-    <!-- Hộp thoại Modal hiện thiệp chúc mừng kèm ảnh nền khi click lồng đèn -->
     <div class="wish-modal" id="wishModal">
         <div class="wish-card">
             <button class="close-btn" id="closeWishBtn">&times;</button>
-            <div class="card-header">Gửi người thương</div>
             <div class="card-body">
-                <img src="" id="wishImage" alt="Hình ảnh Trung Thu">
+                <img src="" id="wishImage" alt="Hình ảnh">
                 <p id="wishText"></p>
             </div>
-            <div class="card-footer">★ TRUNG THU AN LÀNH ★</div>
         </div>
     </div>
-
-    <!-- Gọi file âm thanh nền hệ thống -->
     <audio id="bgm" src="assets/1.mp3" loop></audio>
-
-    <!-- KÍCH HOẠT HỆ THỐNG THƯ VIỆN ĐỒ HỌA 3D CHUẨN XÁC -->
-    <!-- Thư viện cốt lõi Three.js -->
     <script src="assets/three.min.js"></script>
-    <!-- Thư viện bổ trợ OrbitControls điều khiển xoay camera -->
     <script src="assets/OrbitControls.js"></script>
-    <!-- File xử lý logic thỏ ngọc, hiệu ứng pháo hoa, rải đá và lồng đèn của bạn -->
     <script src="assets/script.js"></script>
-
 </body>
 </html>
